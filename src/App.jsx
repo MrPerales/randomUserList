@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import './App.css'
 import { UserList } from './components/UserList/UserList';
 
@@ -12,9 +12,9 @@ function App() {
   const [filterCountry, setFilterCountry] = React.useState('');
   //useRef para guardar un valor que queremos que se comparta entre renderizados 
   // pero al cambiar no vuelva a renderizar el componente 
-  const originalList=useRef([]);
+  const originalList = useRef([]);
 
-  const handleReset=()=>{
+  const handleReset = () => {
     setUsers(originalList.current);
   }
 
@@ -26,23 +26,37 @@ function App() {
     setSortCountry(!sortByCountry);
   }
 
-// console.log(filterCountry);
-///////////////filter by ... //////////////////////// 
-  const filteredUser = filterCountry ?
-    users.filter(user => {
-      return user.location.country.toLowerCase().includes(filterCountry.toLowerCase())
-    })
-    : users;
+  // console.log(filterCountry);
+  ///////////////filter by ... //////////////////////// 
+  // const filteredUser = filterCountry ?
+  //   users.filter(user => {
+  //     return user.location.country.toLowerCase().includes(filterCountry.toLowerCase())
+  //   })
+  //   : users;
+
+  // con useMemo para evitar render innecesarios
+  const filteredUser = React.useMemo(() => {
+    return filterCountry ?
+      users.filter(user => {
+        return user.location.country.toLowerCase().includes(filterCountry.toLowerCase())
+      })
+      : users;
+
+  }, [users,filterCountry]);
+
+
+
+
 
   // nos regresa un [] por lo tanto lo usamos como lista para render 
   // le pasamos el dato filtrado para que podamos acomar y desacomodar cuando este filtrado 
   const sortedUsers = sortByCountry ?
-    [...filteredUser ].sort((a, b) => {
+    [...filteredUser].sort((a, b) => {
       return a.location.country.localeCompare(b.location.country);
       // localeCompare compara el string y lo ordena
     })
     : filteredUser
-//////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////
   // eliminar usuarios 
   const handleDelete = (email) => {
     const filterUser = users.filter(user => user.email !== email)
@@ -53,9 +67,9 @@ function App() {
   React.useEffect(() => {
     fetch(URL)
       .then((resp) => resp.json())
-      .then((data) =>{ 
+      .then((data) => {
         setUsers(data.results)
-        originalList.current=data.results  
+        originalList.current = data.results
       })
   }, [])
 
@@ -72,13 +86,13 @@ function App() {
           {sortByCountry ? 'do not sort by country' : 'sort by country'}
         </button>
         <button onClick={handleReset}>
-          Reset list 
+          Reset list
         </button>
         <input
           placeholder='search by Country'
           onChange={(e) => setFilterCountry(e.target.value)}
         />
-        
+
       </header>
       <main>
         <UserList users={sortedUsers} color={color} handleDelete={handleDelete} />
