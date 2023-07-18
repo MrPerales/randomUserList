@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import './App.css'
 import { UserList } from './components/UserList/UserList';
 
@@ -10,6 +10,13 @@ function App() {
   const [color, setColor] = React.useState(false);
   const [sortByCountry, setSortCountry] = React.useState(false);
   const [filterCountry, setFilterCountry] = React.useState('');
+  //useRef para guardar un valor que queremos que se comparta entre renderizados 
+  // pero al cambiar no vuelva a renderizar el componente 
+  const originalList=useRef([]);
+
+  const handleReset=()=>{
+    setUsers(originalList.current);
+  }
 
   const toggleColor = () => {
     setColor(!color);
@@ -46,7 +53,10 @@ function App() {
   React.useEffect(() => {
     fetch(URL)
       .then((resp) => resp.json())
-      .then((data) => setUsers(data.results))
+      .then((data) =>{ 
+        setUsers(data.results)
+        originalList.current=data.results  
+      })
   }, [])
 
 
@@ -60,6 +70,9 @@ function App() {
         </button>
         <button onClick={toggleSortCountry} >
           {sortByCountry ? 'do not sort by country' : 'sort by country'}
+        </button>
+        <button onClick={handleReset}>
+          Reset list 
         </button>
         <input
           placeholder='search by Country'
