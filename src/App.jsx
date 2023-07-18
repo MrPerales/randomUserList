@@ -25,7 +25,12 @@ function App() {
         // localeCompare compara el string y lo ordena
       })
       : users
-    
+  
+  // eliminar usuarios 
+  const handleDelete=(email)=>{
+    const filterUser= users.filter(user => user.email!== email)
+    setUsers(filterUser);
+  } 
   
 
   React.useEffect(() => {
@@ -48,7 +53,7 @@ function App() {
         </button>
       </header>
       <main>
-        <UserList users={sortedUsers} color={color} />
+        <UserList users={sortedUsers} color={color} handleDelete={handleDelete}/>
 
       </main>
 

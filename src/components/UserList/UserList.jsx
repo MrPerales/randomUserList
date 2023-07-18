@@ -1,7 +1,7 @@
 import React from "react";
 import './userList.css'
 
-function UserList({ users ,color}) {
+function UserList({ users ,color,handleDelete}) {
 
     return (
 
@@ -22,7 +22,7 @@ function UserList({ users ,color}) {
                 
                 return (
 
-                        <tr key={index} style={{background: printColor}}>
+                        <tr key={user.email} style={{background: printColor}}>
                             <td>
                                 <img src={user.picture.thumbnail} alt={`${user.name.first} Photo `} />
                             </td>
@@ -30,7 +30,7 @@ function UserList({ users ,color}) {
                             <td>{user.name.last}</td>
                             <td>{user.location.country}</td>
                             <td>
-                                <button>Delete</button>
+                                <button onClick={()=>handleDelete(user.email)} >Delete</button>
                             </td>
 
                         </tr>
