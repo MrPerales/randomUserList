@@ -16,7 +16,7 @@ function UserList({ users ,color}) {
             </thead>
             <tbody>
                 {users.map((user, index) => {
-                    const background = index % 2 === 0 ? '#fff' : '#aaa'
+                    const background = index % 2 === 0 ? '#ddd' : '#999'
                     const printColor = color ? background : 'transparent'
                 
                 
